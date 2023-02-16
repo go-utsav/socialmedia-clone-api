@@ -10,7 +10,7 @@ var router = express.Router();
 router.get('/', list);
 router.post('/createpost', createpost);
 router.get('/deletepost', deletepost);
-router.get('/login', login);
+router.post('/login', login);
 router.post('/createuser', createuser);
 router.post('/verifyuser', verifyuser);
 

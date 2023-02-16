@@ -26,7 +26,7 @@ exports.createpost = async function (req, res) {
                 status: 'success',
                 message: 'new post created successfully',
                 data: newpost
-            })
+            });
         } else {
 
             return res.json({
@@ -54,28 +54,41 @@ exports.createpost = async function (req, res) {
  */
 
 exports.deletepost = async function (req, res) {
-    const delid = req.query.id;
-    console.log(delid);
-    try {
-        const newpost = await db.user_posts.destroy({
-            where: { id: req.query.id }
-        })
+    const token = req.headers.authorization.split(' ')[1];
+    const verify = jwt.verify(token.toString(), process.env.ACESS_KEY_SECRET);
 
-        return res.json({
-            status: 'success',
-            message: 'your post has been deleted ',
-            data: {
-                "deleted item id": delid
-            }
-        })
-    } catch (e) {
-        console.log(e);
+    if (verify) {
+
+        try {
+
+            const newpost = await db.user_posts.destroy({
+                where: { id: req.query.id }
+            })
+
+            return res.json({
+                status: 'success',
+                message: 'your post has been deleted ',
+                data: {
+                    "deleted item id": req.query.id
+                }
+            });
+
+        } catch (e) {
+            console.log(e);
+
+            return res.json({
+                status: 'error',
+                message: 'internal server error',
+            });
+        }
+    } else {
 
         return res.json({
             status: 'error',
-            message: 'internal server error',
+            message: 'please login first'
         });
     }
+
 }
 
 /**
